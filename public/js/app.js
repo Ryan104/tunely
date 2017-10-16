@@ -19,7 +19,9 @@ $(document).ready(function() {
   $('#newAlbumModal').on('click', '#saveAlbum', function(event){
     // this function gets the form data for a new album
     console.log('clicked');
-    postFormData($(this).parent().parent().find('form').serialize());
+    let $form = $(this).parent().parent().find('form');
+    postFormData($form.serialize());
+    $form.trigger('reset');
   });
 });
 
