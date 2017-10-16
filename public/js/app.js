@@ -14,7 +14,21 @@ $(document).ready(function() {
       renderAlbum(album);
       });
   });
+
+  // new album modal form submit
+  $('#newAlbumModal').on('click', '#saveAlbum', function(event){
+    // this function gets the form data for a new album
+    console.log('clicked');
+    postFormData($(this).parent().parent().find('form').serialize());
+  });
 });
+
+// this function sends a post request of serialized form data
+function postFormData(data){
+  $.post('/api/albums', data, function(response){
+    renderAlbum(response);
+  });
+}
 
 // this function takes a single album and renders it to the page
 function renderAlbum(album) {

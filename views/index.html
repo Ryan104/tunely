@@ -25,16 +25,13 @@
       </div>
     </div>
 
-    <section class="container">
-      <div class="row">
-        
-      </div>
-    </section>
+    
 
     <section class="container">
       <div class="row">
         <div class="col-md-10 col-md-offset-1">
           <h2>Albums</h2>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newAlbumModal">New Album</button>
         </div>
       </div>
       <!-- albums! -->
@@ -43,6 +40,73 @@
 
       </div>
     </section>
+    
+
+    <!-- new album modal -->
+    <div class="modal" id="newAlbumModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">New Album</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Modal body text goes here.</p>
+            <form class="form-horizonal">
+            <fieldset class="form-horizontal">
+
+              <!-- Form Name -->
+              <legend>Add New Album</legend>
+
+              <!-- Text input-->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="name">Album Name</label>
+                <div class="col-md-4">
+                <input id="name" name="name" type="text" placeholder="" class="form-control input-md" required>
+
+                </div>
+              </div>
+
+              <!-- Text input-->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="artistName">Artist Name</label>
+                <div class="col-md-4">
+                <input id="textinput" name="artistName" type="text" placeholder="" class="form-control input-md" required>
+
+                </div>
+              </div>
+
+              <!-- Text input-->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="releaseDate">Release Date</label>
+                <div class="col-md-4">
+                <input id="releaseDate" name="releaseDate" type="text" placeholder="1992" class="form-control input-md" required>
+
+                </div>
+              </div>
+
+              <!-- Textarea -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="genres">Genres (separated by commas)</label>
+                <div class="col-md-4">
+                  <textarea class="form-control" id="genres" name="genres" required>rock,pop</textarea>
+                </div>
+              </div>
+            </fieldset>
+            </form>
+          </div>
+
+          <div class="modal-footer">
+            <!-- submit and close buttons -->
+            <button type="button" class="btn btn-primary" id="saveAlbum" data-dismiss="modal">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end new albym Modal -->
 
     <!-- begin songModal: this is not visible until you call .modal() on it -->
     <div class="modal fade" tabindex="-1" role="dialog" id="songModal">
