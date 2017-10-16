@@ -65,8 +65,13 @@ app.post('/api/albums', (req, res) => {
   });
 });
 
+app.get('/api/albums/:id', (req, res) => {
+  db.Album.findOne({_id: req.params.id}, (err, album) => {
+    res.json(album);
+  });
+});
+
 app.post('/api/albums/:id/songs', (req, res) => {
-  console.log(req.params.id);
   db.Album.findOne({_id: req.params.id}, (err, album) => {
     if (err){ return console.log(err); }
     album.songs.push(req.body);
