@@ -1,5 +1,18 @@
 // SERVER-SIDE JAVASCRIPT
 
+/* TODOS
+--sprint 2--
+TODO: Change the new album form, replacing the textarea for genre with a field that has a button to add a new field for each genre. 
+
+--sprint 3--
+TODO: Add the following routes
+  GET /api/albums/:album_id/songs/:id
+  GET /api/albums/:album_id/songs
+TODO: Add imageUrl as a property on Albums. Update everything to use it!
+TODO: Add track length as a field for each album.
+
+--sprint 4--
+*/
 //require express in our app
 var express = require('express');
 // generate a new express app and call it 'app'
@@ -82,7 +95,6 @@ app.post('/api/albums/:id/songs', (req, res) => {
     album.save();
     res.json(album);
   });
-  
 });
 
 /**********
