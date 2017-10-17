@@ -17,6 +17,8 @@ DONE: Prompt the user with a modal "Are you sure?" when they click delete
 DONE: Animate the delete
 
 --sprint 5--
+DONE: Open modal for edits
+TODO: Fill in form fields with old data
 
 */
 //require express in our app
@@ -31,6 +33,7 @@ app.use(bodyParser.json());
 
 // serve static files from public folder
 app.use(express.static(__dirname + '/public'));
+
 
 /************
  * DATABASE *
@@ -65,6 +68,7 @@ app.get('/api', function api_index (req, res){
       {method: "GET", path: "/api/albums", description: "Index: JSON containing all albums"},
       {method: "POST", path: "/api/albums", description: "Create: Add a new album to the DB"},
       {method: "GET", path: "/api/albums/:id", description: "Show: JSON contain the album with the given id"},
+      {method: "PUT", path: "/api/albums/:id", description: "Update: Edit the data for an album"},
       {method: "POST", path: "/api/albums/:id/songs", description: "Create: add a new song to the album with the given id"},
       {method: "DELETE", path: "/api/albums/:id", description: "Destroy: Delete the album with the given id"}
     ]
@@ -112,7 +116,13 @@ app.post('/api/albums/:id/songs', (req, res) => {
 });
 
 app.put('/api/albums/:id', (req, res) => {
-  res.json({message: 'putting'});
+  db.Album.findById(req.params.id, (err, album) => {
+    console.log(req.body);
+    album.set(req.body)
+    album.save((err, updatedAlbum) => {
+      res.json(updatedAlbum);
+    });
+  });
 });
 
 /**********

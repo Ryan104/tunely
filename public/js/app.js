@@ -11,9 +11,10 @@ $(document).ready(function() {
   */
 
   $('#newAlbumModal').on('click', '#saveAlbum', handleNewAlbumSubmit);
+  $('#editAlbumModal').on('click', '#editAlbum', handleEditAlbum);
 
   $('#albums').on('click', '.delete-album', openDeleteAlbumModal);
-  $('#albums').on('click', '.edit-album', openEditModal); // TODO: handle edit and edit modal
+  $('#albums').on('click', '.edit-album', openEditAlbumModal);
   $('#albums').on('click', '.add-song', openNewSongModal);
 
   $('#deleteAlbumModal').on('click', '#deleteAlbum', handleDeleteAlbum);
@@ -25,10 +26,20 @@ $(document).ready(function() {
     CLICK EVENTS
 */
 
+//TODO: all these 'open modal' methods are the same... combine them into one method
+
 function openNewSongModal(e) {
   let id = $(this).parents('.album').data('album-id'); // "5665ff1678209c64e51b4e7b"
   $('#songModal').attr('data-album-id', id);
   $('#songModal').modal();
+}
+
+function openEditAlbumModal(e){
+  let id = $(this).parents('.album').data('album-id');
+  $('#editAlbumModal').attr('data-album-id', id);
+  //$('#editAlbumModal').find('input[name="name"]').val('');
+
+  $('#editAlbumModal').modal();
 }
 
 function openDeleteAlbumModal(e) {
@@ -41,6 +52,12 @@ function handleNewAlbumSubmit(e){
   let $form = $(this).parent().parent().find('form');
   postAlbumData($form.serialize());
   $form.trigger('reset');
+}
+
+function handleEditAlbum(e){
+  let $form = $(this).parent().parent().find('form');
+  let id = $('#editAlbumModal').attr('data-album-id');
+  updateAlbum(id, $form.serialize());
 }
 
 function handleDeleteAlbum(e){
@@ -90,7 +107,11 @@ function updateAlbum(albumId, albumData){
   $.ajax({
     method: 'put',
     url: '/api/albums/' + albumId,
-    success: (res) => (console.log(res))
+    data: albumData,
+  }).done(response => {
+    // TODO: removing and rerendering is awkward... use .replaceWith()
+    $('.album[data-album-id="'+albumId+'"').remove();
+    renderAlbum(response);
   });
 }
 
