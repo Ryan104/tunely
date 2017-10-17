@@ -111,6 +111,10 @@ app.post('/api/albums/:id/songs', (req, res) => {
   });
 });
 
+app.put('/api/albums/:id', (req, res) => {
+  res.json({message: 'putting'});
+});
+
 /**********
  * SERVER *
  **********/

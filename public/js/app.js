@@ -13,6 +13,7 @@ $(document).ready(function() {
   $('#newAlbumModal').on('click', '#saveAlbum', handleNewAlbumSubmit);
 
   $('#albums').on('click', '.delete-album', openDeleteAlbumModal);
+  $('#albums').on('click', '.edit-album', openEditModal); // TODO: handle edit and edit modal
   $('#albums').on('click', '.add-song', openNewSongModal);
 
   $('#deleteAlbumModal').on('click', '#deleteAlbum', handleDeleteAlbum);
@@ -84,6 +85,15 @@ function postAlbumData(albumData){
   $.post('/api/albums', albumData, (response) => ( renderAlbum(response)));
 }
 
+// edit album
+function updateAlbum(albumId, albumData){
+  $.ajax({
+    method: 'put',
+    url: '/api/albums/' + albumId,
+    success: (res) => (console.log(res))
+  });
+}
+
 // delete album
 function deleteAlbum(albumId){
   $.ajax({
@@ -147,6 +157,7 @@ function renderAlbum(album) {
 
   "              <div class='panel-footer'>" +
   "                  <button class='btn btn-danger delete-album'>Delete Album</button>" + 
+  "                  <button class='btn btn-info edit-album'>Edit Album</button>" + 
   "                  <button class='btn btn-primary add-song'>Add Song</button>" + 
   "              </div>" +
   "            </div>" +
