@@ -1,68 +1,109 @@
-/* CLIENT-SIDE JS
- *
- * You may edit this file as you see fit.  Try to separate different components
- * into functions and objects as needed.
- *
- */
-
+/* CLIENT-SIDE JS */
 
 $(document).ready(function() {
   console.log('app.js loaded!');
 
-  $.get('/api/albums', (albums) => {
-    albums.forEach((album) => {
-      renderAlbum(album);
-      });
-  });
+  // Display all albums from API Call
+  getAlbums(renderAlbum);
 
-  // new album modal form submit
-  $('#newAlbumModal').on('click', '#saveAlbum', function(event){
-    // this function gets the form data for a new album
-    console.log('clicked');
-    let $form = $(this).parent().parent().find('form');
-    postAlbumData($form.serialize());
-    $form.trigger('reset');
-  });
+  /*
+      SET CLICK LISTENERS
+  */
 
-  $('#albums').on('click', '.add-song', function(e) {
-      console.log('asdfasdfasdf');
-      var id= $(this).parents('.album').data('album-id'); // "5665ff1678209c64e51b4e7b"
-      console.log('id',id);
+  $('#newAlbumModal').on('click', '#saveAlbum', handleNewAlbumSubmit);
 
-      $('#songModal').attr('data-album-id', id);
-      $('#songModal').modal();
-  });
+  $('#albums').on('click', '.delete-album', openDeleteAlbumModal);
+  $('#albums').on('click', '.add-song', openNewSongModal);
 
+  $('#deleteAlbumModal').on('click', '#deleteAlbum', handleDeleteAlbum);
   $('#songModal').on('click', '#saveSong', handleNewSongSubmit);
 });
 
 
-// this function sends a post request of serialized form data
-function postAlbumData(data){
-  $.post('/api/albums', data, function(response){
-    renderAlbum(response);
+/*
+    CLICK EVENTS
+*/
+
+function openNewSongModal(e) {
+  let id = $(this).parents('.album').data('album-id'); // "5665ff1678209c64e51b4e7b"
+  $('#songModal').attr('data-album-id', id);
+  $('#songModal').modal();
+}
+
+function openDeleteAlbumModal(e) {
+  let id = $(this).parents('.album').data('album-id');
+  $('#deleteAlbumModal').attr('data-album-id', id);
+  $('#deleteAlbumModal').modal();
+}
+
+function handleNewAlbumSubmit(e){
+  let $form = $(this).parent().parent().find('form');
+  postAlbumData($form.serialize());
+  $form.trigger('reset');
+}
+
+function handleDeleteAlbum(e){
+  let id = $('#deleteAlbumModal').attr('data-album-id');
+  $album = $('.album[data-album-id="'+id+'"');
+  deleteAlbum(id);
+  $album.fadeOut(1000, function(){
+      $album.remove();
   });
 }
 
 function handleNewSongSubmit(e) {
-  console.log('new song click');
   e.preventDefault();
   let $form = $('#songModal').find('form');
   let id = $('#songModal').attr('data-album-id');
-  // get data from modal fields
-  let formData = $form.serialize();
-  // POST to SERVER
-  $.post('/api/albums/' + id + '/songs', formData, function(res){
-    //update the correct album to show the new song
-    $('.album[data-album-id="' + id+'"').find('.album-songs').html(buildSongsHtml(res.songs));
-  });
-  // clear form
-  $('#songModal').find('form').trigger('reset');
-  // close modal
-  $('#songModal').modal('toggle');
   
+  // get data from modal fields & POST to SERVER
+  postSong(id, $form.serialize());
+
+  // clear form & close modal
+  $form.trigger('reset');
+  $('#songModal').modal('toggle');
+}
+
+
+
+
+/*
+    AJAX METHODS
+*/
+
+// get all albums
+function getAlbums(renderHtml){
+  $.get('/api/albums', (albums) => {
+    albums.forEach((album) => (renderHtml(album)));
+  });
 
 }
+
+// post a new album
+function postAlbumData(albumData){
+  $.post('/api/albums', albumData, (response) => ( renderAlbum(response)));
+}
+
+// delete album
+function deleteAlbum(albumId){
+  $.ajax({
+    method: 'delete',
+    url: '/api/albums/' + albumId,
+    success: (res) => (console.log('deleted'))
+  });
+}
+
+// post a song to the album with the given ID
+function postSong(albumId, songData){
+  $.post('/api/albums/' + albumId + '/songs', songData, function(res){
+    //update the correct album to show the new song
+    $('.album[data-album-id="' + albumId+'"').find('.album-songs').html(buildSongsHtml(res.songs));
+  });
+}
+
+/*
+    HTML RENDER METHODS
+*/
 
 // this function takes a single album and renders it to the page
 function renderAlbum(album) {
@@ -105,6 +146,7 @@ function renderAlbum(album) {
   "              </div>" + // end of panel-body
 
   "              <div class='panel-footer'>" +
+  "                  <button class='btn btn-danger delete-album'>Delete Album</button>" + 
   "                  <button class='btn btn-primary add-song'>Add Song</button>" + 
   "              </div>" +
   "            </div>" +

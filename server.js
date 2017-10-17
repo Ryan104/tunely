@@ -2,6 +2,7 @@
 
 /* TODOS
 --sprint 2--
+DONE: Use a modal for the new album form
 TODO: Change the new album form, replacing the textarea for genre with a field that has a button to add a new field for each genre. 
 
 --sprint 3--
@@ -12,6 +13,11 @@ TODO: Add imageUrl as a property on Albums. Update everything to use it!
 TODO: Add track length as a field for each album.
 
 --sprint 4--
+DONE: Prompt the user with a modal "Are you sure?" when they click delete
+DONE: Animate the delete
+
+--sprint 5--
+
 */
 //require express in our app
 var express = require('express');
@@ -59,7 +65,8 @@ app.get('/api', function api_index (req, res){
       {method: "GET", path: "/api/albums", description: "Index: JSON containing all albums"},
       {method: "POST", path: "/api/albums", description: "Create: Add a new album to the DB"},
       {method: "GET", path: "/api/albums/:id", description: "Show: JSON contain the album with the given id"},
-      {method: "POST", path: "/api/albums/:id/songs", description: "Create: add a new song to the album with the given id"}
+      {method: "POST", path: "/api/albums/:id/songs", description: "Create: add a new song to the album with the given id"},
+      {method: "DELETE", path: "/api/albums/:id", description: "Destroy: Delete the album with the given id"}
     ]
   });
 });
@@ -85,6 +92,13 @@ app.post('/api/albums', (req, res) => {
 app.get('/api/albums/:id', (req, res) => {
   db.Album.findOne({_id: req.params.id}, (err, album) => {
     res.json(album);
+  });
+});
+
+app.delete('/api/albums/:id', (req, res) => {
+  db.Album.remove({_id: req.params.id}, (err, album) => {
+    if (err) {return console.log(err);}
+    res.status(204).end();
   });
 });
 
